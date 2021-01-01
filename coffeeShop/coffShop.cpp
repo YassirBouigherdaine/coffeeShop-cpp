@@ -2,9 +2,6 @@
 
 
 
-
-
-
 coffShop::coffShop(): front(nullptr), rear(nullptr), length(0)
 {}
 
@@ -19,9 +16,10 @@ coffShop::~coffShop()
 
 void coffShop::enqueue_order()
 {
-	
 	Order* newOrder = new Order;
 	newOrder->next = nullptr;
+
+	int id, exist = 0;
 
 	system("cls");
 
@@ -29,33 +27,49 @@ void coffShop::enqueue_order()
 	std::cout << "\t\t*                   MAKE ORDER                   *\n";
 	std::cout << "\t\t**************************************************\n\n";
 
-	std::cout << "\n\n\t\t Table number : ";
-	std::cin >> newOrder->tableNum;
-	std::cout << "\n\n\t\t Date (day/month/year): ";
-	std::cin >> newOrder->Date;
 	std::cout << "\n\n\t\t Item id : ";
-	std::cin >> newOrder->item.item_id;
-	std::cout << "\n\n\t\t number of items : ";
-	std::cin >> newOrder->NumOfItems;
-	
-	if (front == nullptr)
+	std::cin >> id;
+
+	exist = is_exist(id);
+
+	if (exist)
 	{
-		front = rear = newOrder;
-	}
-	else
-	{
-		rear->next = newOrder;
-		rear = newOrder;
+		newOrder->item.item_id = id;
+
+		std::cout << "\n\n\t\t Table number : ";
+		std::cin >> newOrder->tableNum;
+		std::cout << "\n\n\t\t Date (day/month/year): ";
+		std::cin >> newOrder->Date;
+		std::cout << "\n\n\t\t number of items : ";
+		std::cin >> newOrder->NumOfItems;
+
+		if (is_empty())
+		{
+			front = rear = newOrder;
+		}
+		else
+		{
+			rear->next = newOrder;
+			rear = newOrder;
+		}
+
+		length++;
 	}
 
-	length++;
+	else
+	{
+		std::cin.get();
+		std::cout << "\n\t\t\t Item not found\n";
+		std::cin.get();
+	}
+	
 }
 
 
 
 void coffShop::dequeue_order()
 {
-	if (front != nullptr)
+	if (!is_empty())
 	{
 		// saving operation
 
@@ -68,7 +82,7 @@ void coffShop::dequeue_order()
 		// the bill
 
 		std::ifstream fin;
-		fin.open("Inventory.txt", std::ios::in | std::ios::binary);
+		fin.open("stock.txt", std::ios::in | std::ios::binary);
 
 		while (!fin.eof())
 		{
@@ -90,9 +104,7 @@ void coffShop::dequeue_order()
 				std::cout << "                                               Toltal:          " << price * front->NumOfItems << "      \n";
 				std::cout << "--------------------------------------------------------------------------------\n\n";
 				std::cout << "\n\t\t\t Thank you for visiting us \n";
-				std::cin.get();
-				std::cout << "\n\n\t\t\t Press [ENTER] to continue";
-				std::cin.get();
+				break;
 			}
 		}
 
@@ -106,13 +118,21 @@ void coffShop::dequeue_order()
 
 		// if there is one order the rear must be updated
 
-		if (front == nullptr)
+		if (is_empty())
 		{
 			rear = nullptr;
 		}
+
+		length--;
+	}
+	else
+	{
+		std::cout << "\n\t\t\t List is empty\n";
 	}
 
-	length--;
+	std::cin.get();
+	std::cout << "\n\n\t\t\t Press [ENTER] to continue";
+	std::cin.get();
 }
 
 	
@@ -142,6 +162,7 @@ void coffShop::print_queues()
 	std::cin.get();
 }
 
+
 bool coffShop::is_empty()
 {
 	if (front == nullptr)
@@ -156,7 +177,7 @@ bool coffShop::is_empty()
 
 void coffShop::peek()
 {
-	if (front != nullptr)
+	if (!is_empty())
 	{
 		std::cout << "\n------------------------------------------------------------------\n";
 		std::cout << "\t\t\t\tORDER\n";
@@ -230,19 +251,16 @@ void coffShop::display_report()
 			}
 
 			fin.close();
-			std::cin.get();
-			std::cout << "\n\n\t\t\t Press [ENTER] to continue";
-			std::cin.get();
 		}
-
 
 		else if (op == 2)
 		{
 			// display list of orders served $$
 			
 			std::ifstream fin("ordersServed.txt", std::ios::in | std::ios::binary);
-			
-			Order* currOrder = front;
+
+			int tableN, id, n_of_items;
+			std::string date;
 
 			if (fin.is_open())
 			{
@@ -250,16 +268,16 @@ void coffShop::display_report()
 
 				std::cout << "\n----------------------------------ORDERS SERVED--------------------------------------------\n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
-				std::cout << "\t\tTABLE  \t DATE\t\tID \t  ITEMS \n";
+				std::cout << "\t\tTABLE-N  \t DATE\t\tID \t  ITEMS \n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
 				
-				fin >> currOrder->tableNum >> currOrder->Date >> currOrder->item.item_id >> currOrder->NumOfItems;
+				fin >> tableN >> date >> id >> n_of_items;
 
 				while (!fin.eof())
 				{
-					std::cout << "\t\t"<<currOrder->tableNum << "\t" << currOrder->Date << "\t" << currOrder->item.item_id << "\t" << currOrder->NumOfItems << "\t" << std::endl;
+					std::cout << "\t\t" << tableN << "\t\t" << date << "\t" << id << "\t   " << n_of_items << std::endl;
 					std::cout << "-------------------------------------------------------------------------------------------\n";
-					fin >> currOrder->tableNum >> currOrder->Date >> currOrder->item.item_id >> currOrder->NumOfItems;
+					fin >> tableN >> date >> id >> n_of_items;
 				}
 			}
 			else
@@ -268,15 +286,13 @@ void coffShop::display_report()
 			}
 
 			fin.close();
-			std::cin.get();
-			std::cout << "\n\n\t\t\t Press [ENTER] to continue";
-			std::cin.get();
 		}
+
+		std::cin.get();
+		std::cout << "\n\n\t\t\t Press [ENTER] to continue";
+		std::cin.get();
 	
 	} while (op != 3);
-
-	
-	
 }
 
 
@@ -285,7 +301,7 @@ void coffShop::clear_list()
 	Order* orderToDelete = front;
 	Order* nextOrder = nullptr;
 
-	if (front != nullptr)
+	if (!is_empty())
 	{
 		while (orderToDelete != nullptr)
 		{

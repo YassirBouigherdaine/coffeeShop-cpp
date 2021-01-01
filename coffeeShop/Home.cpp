@@ -2,7 +2,6 @@
 
 
 
-
 coffShop coffee;
 
 
@@ -207,7 +206,6 @@ void creatAcount()
 }
 
 
-
 // login staff
 
 void login()
@@ -257,7 +255,6 @@ void login()
 		}
 	}
 }
-
 
 
 // admin log-in

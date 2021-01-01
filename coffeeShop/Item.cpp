@@ -2,36 +2,28 @@
 
 
 
-
-
 Item::Item(): item_id (0), name ("Unknown"), item_cost (0), remainStock (0)
 {}
-
-
-Item::~Item()
-{
-	
-}
 
 
 void Item::display_item_list()
 {
 	system("cls");
 
-	std::cout << "\n----------------------------------ITEM LIST--------------------------------------------------\n";
+	std::cout << "\n----------------------------------ITEM LIST------------------------------------------------\n";
 	std::cout << "-------------------------------------------------------------------------------------------\n";
-	std::cout << "\tID\tNAME \t      ITEM COST\tREMAIN STOCK\n";
+	std::cout << "\tID\tNAME\t\tITEM COST\tREMAIN STOCK\n";
 	std::cout << "-------------------------------------------------------------------------------------------\n";
 
 	std::ifstream fin;
-	fin.open("Inventory.txt", std::ios::in | std::ios::binary);
+	fin.open("stock.txt", std::ios::in | std::ios::binary);
 	fin.read((char*)this, sizeof(Item));
 
 	if (fin.is_open())
 	{
 		while (!fin.eof())
 		{
-			std::cout << "\t" << item_id << "\t" << name << "\t  " << item_cost << "\t" << remainStock << std::endl;
+			std::cout << "\t" << item_id << "\t" << name << "\t  " << item_cost << "\t\t  " << remainStock << std::endl;
 			std::cout << "-------------------------------------------------------------------------------------------\n";
 
 			fin.read((char*)this, sizeof(Item));
@@ -49,6 +41,7 @@ void Item::display_item_list()
 	std::cin.get();
 }
 
+
 void Item::item_list_forCustom()
 {
 	system("cls");
@@ -59,7 +52,7 @@ void Item::item_list_forCustom()
 	std::cout << "-------------------------------------------------------------------------------------------\n";
 
 	std::ifstream fin;
-	fin.open("Inventory.txt", std::ios::in | std::ios::binary);
+	fin.open("stock.txt", std::ios::in | std::ios::binary);
 	fin.read((char*)this, sizeof(Item));
 
 	if (fin.is_open())
@@ -90,7 +83,7 @@ void Item::display_item()
 	int id, op, exist = 0;
 
 	std::ifstream fin;
-	fin.open("Inventory.txt", std::ios::in | std::ios::binary);
+	fin.open("stock.txt", std::ios::in | std::ios::binary);
 
 	std::cout << "\n\t\t Enter ID : ";
 	std::cin >> id;
@@ -174,7 +167,7 @@ void Item::display_item()
 int Item::is_exist(int id)
 {
 	std::ifstream fin;
-	fin.open("Inventory.txt", std::ios::in | std::ios::binary);
+	fin.open("stock.txt", std::ios::in | std::ios::binary);
 
 	while (!fin.eof())
 	{
@@ -197,7 +190,7 @@ void Item::add_item()
 	system("cls");
 
 	std::ofstream fout;
-	fout.open("Inventory.txt", std::ios::app | std::ios::binary);
+	fout.open("stock.txt", std::ios::app | std::ios::binary);
 
 	int id, exist = 0;
 
@@ -216,9 +209,10 @@ void Item::add_item()
 		std::cin >> item_cost;
 		std::cout << "\n\t\t Amount:";
 		std::cin >> remainStock;
-	
+
 		fout.write((char*)this, sizeof(Item));
-		
+
+		std::cin.get();
 		std::cout << "\n\t\t\t Item has been created successfully\n";
 		std::cin.get();
 	}
@@ -238,7 +232,7 @@ void Item::edit_amount(int id)
 	int amountAdded;                            //received amount
 	std::string date;                           //day/mon/year
 	
-	std::fstream file("Inventory.txt", std::ios::out | std::ios::in | std::ios::binary);
+	std::fstream file("stock.txt", std::ios::out | std::ios::in | std::ios::binary);
 	std::ofstream newFile("amountAdded.txt", std::ios::app | std::ios::binary);
 
 	std::cout << "\n\n\t\t Enter date: ";
@@ -276,7 +270,7 @@ void Item::edit_amount(int id)
 void Item::edit_item(int id)
 {
 	std::fstream file;
-	file.open("Inventory.txt", std::ios::in | std::ios::out | std::ios::binary);
+	file.open("stock.txt", std::ios::in | std::ios::out | std::ios::binary);
 
 	if (file.good())
 	{
@@ -319,8 +313,7 @@ void Item::edit_item(int id)
 
 void Item::delete_item(int id)
 {
-	//std::fstream fin("Inventory.txt", std::ios::in | std::ios::binary);
-	std::fstream fin("Inventory.txt", std::ios::in | std::ios::binary);
+	std::fstream fin("stock.txt", std::ios::in | std::ios::binary);
 	std::fstream newFile("tempFile.txt", std::ios::app | std::ios::binary);
 
 	while (fin.read((char*)this, sizeof(Item)))
@@ -333,16 +326,12 @@ void Item::delete_item(int id)
 
 	fin.close();
 	newFile.close();
-	remove("Inventory.txt");
-	rename("tempFile.txt", "Inventory.txt");
+	remove("stock.txt");
+	rename("tempFile.txt", "stock.txt");
 	
 	system("cls");
 	std::cout << "\n\t\t\t Item was deleted successfully\n";
-	std::cin.get();
-
-	std::cout << "\n\t\t\t Press [ENTER] to continue";
-	std::cin.get();
-	//system("cls");
+	
 }
 
 

@@ -4,8 +4,6 @@
 
 
 
-
-
 // class coffshop
 
 class coffShop : public Item
@@ -20,7 +18,7 @@ class coffShop : public Item
 
 		int NumOfItems = 0;
 
-		Order* next;
+		Order* next = nullptr;
 	};
 
 	Order* front;
@@ -35,8 +33,6 @@ public:
 	~coffShop();                  
 
 	void enqueue_order();         // add order to the list 
-
-	//void delete_order();          // delete a specific order
 
 	void dequeue_order();          // deliver order 
 

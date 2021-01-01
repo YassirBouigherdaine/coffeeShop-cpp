@@ -1,30 +1,26 @@
 #pragma once
-
 #include<iostream>
 #include<fstream>
 #include<string>
-
-
-
 
 
 // class item
 
 class Item
 {
-public:
-
-	float item_cost;
+protected:
 
 	int remainStock;
 
-	int item_id;
+public:
 
 	std::string name;
 
-	Item();
+	float item_cost;
 
-	~Item();
+	int item_id;
+
+	Item();
 
 	void display_item_list();
 
