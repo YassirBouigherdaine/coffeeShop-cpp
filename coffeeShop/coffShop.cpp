@@ -79,17 +79,26 @@ void coffShop::dequeue_order()
 
 		Fout.close();
 
-		// the bill
+		// decreasing item amount
 
-		std::ifstream fin;
-		fin.open("stock.txt", std::ios::in | std::ios::binary);
+		std::fstream file;
+		file.open("stock.txt", std::ios::in | std::ios::out | std::ios::binary);
 
-		while (!fin.eof())
+		while (!file.eof())
 		{
-			fin.read((char*)this, sizeof(Item));
+			file.read((char*)this, sizeof(Item));
 
 			if (item_id == front->item.item_id)
 			{
+				remainStock -= front->NumOfItems;
+
+				unsigned __int64 pos = file.tellg();
+
+				file.seekp(pos - sizeof(Item), std::ios::beg);
+				file.write((char*)this, sizeof(Item));
+				
+				// the bill
+
 				double price = item_cost + (item_cost * 0.3);
 
 				std::cout << "\n ***************\n";
@@ -104,11 +113,12 @@ void coffShop::dequeue_order()
 				std::cout << "                                               Toltal:          " << price * front->NumOfItems << "      \n";
 				std::cout << "--------------------------------------------------------------------------------\n\n";
 				std::cout << "\n\t\t\t Thank you for visiting us \n";
+
 				break;
 			}
 		}
 
-		fin.close();
+		file.close();
 
 		// deleting order
 
@@ -251,6 +261,10 @@ void coffShop::display_report()
 			}
 
 			fin.close();
+
+			std::cin.get();
+			std::cout << "\n\n\t\t\t Press [ENTER] to continue";
+			std::cin.get();
 		}
 
 		else if (op == 2)
@@ -286,12 +300,12 @@ void coffShop::display_report()
 			}
 
 			fin.close();
+
+			std::cin.get();
+			std::cout << "\n\n\t\t\t Press [ENTER] to continue";
+			std::cin.get();
 		}
 
-		std::cin.get();
-		std::cout << "\n\n\t\t\t Press [ENTER] to continue";
-		std::cin.get();
-	
 	} while (op != 3);
 }
 
