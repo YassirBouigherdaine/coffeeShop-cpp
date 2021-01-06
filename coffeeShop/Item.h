@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
 #include<fstream>
-#include<string>
+
 
 
 // class item
@@ -12,11 +12,11 @@ protected:
 
 	int remainStock;
 
-public:
+	float item_cost;
 
 	std::string name;
 
-	float item_cost;
+public:
 
 	int item_id;
 
