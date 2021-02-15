@@ -1,4 +1,5 @@
 #pragma once
+#include<time.h>
 #include<iostream>
 #include<fstream>
 
@@ -15,6 +16,7 @@ protected:
 	float item_cost;
 
 	std::string name;
+
 
 public:
 

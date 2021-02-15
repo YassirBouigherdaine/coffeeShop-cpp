@@ -2,6 +2,10 @@
 
 
 
+
+
+
+
 coffShop::coffShop(): front(nullptr), rear(nullptr), length(0)
 {}
 
@@ -21,6 +25,19 @@ void coffShop::enqueue_order()
 
 	int id, exist = 0;
 
+	time_t now = time(NULL);
+
+	tm lt = {};
+
+	char dt[26] = {};
+
+	ctime_s(dt, 26, &now);
+
+	localtime_s(&lt, &now);
+
+	asctime_s(dt, 26, &lt);
+
+
 	system("cls");
 
 	std::cout << "\n\t\t**************************************************\n";
@@ -38,8 +55,14 @@ void coffShop::enqueue_order()
 
 		std::cout << "\n\n\t\t Table number : ";
 		std::cin >> newOrder->tableNum;
-		std::cout << "\n\n\t\t Date (day/month/year): ";
-		std::cin >> newOrder->Date;
+
+		newOrder->Day = lt.tm_mday;
+		newOrder->Mon = lt.tm_mon+1;
+		newOrder->Year = 1900 + lt.tm_year;
+		
+		newOrder->Hour = lt.tm_hour;
+		newOrder->Min = lt.tm_min;
+
 		std::cout << "\n\n\t\t number of items : ";
 		std::cin >> newOrder->NumOfItems;
 
@@ -75,7 +98,7 @@ void coffShop::dequeue_order()
 
 		std::ofstream Fout("ordersServed.txt", std::ios::app | std::ios::binary);
 
-		Fout << front->tableNum <<"\t"<< front->Date << "\t" << front->item.item_id << "\t" << front->NumOfItems<< "\t" << std::endl;
+		Fout << front->tableNum <<"\t"<< front->Day<< "\t" << front->Mon<< "\t" << front->Year << "\t" << front->Hour << "\t" << front->Min << "\t" << front->item.item_id << "\t" << front->NumOfItems<< std::endl;
 
 		Fout.close();
 
@@ -104,6 +127,8 @@ void coffShop::dequeue_order()
 				std::cout << "\n ***************\n";
 				std::cout << " coffeeshop name ";
 				std::cout << "\n ***************\n";
+				std::cout << "\n\n                                                       Date : "<<front->Day<< "-" << front->Mon<< "-" << front->Year<<"\n";
+				std::cout << "\n\n                                                       Time : "<<front->Hour<< ":" << front->Min<< "\n";
 				std::cout << "\n\n-----------------------------------Bill no: ------------------------------------\n";
 				std::cout << "\n--------------------------------------------------------------------------------\n";
 				std::cout << "\n\t\t Item name     \t\t\tPrice \t\tAmount  \t\t              \n";
@@ -158,7 +183,7 @@ void coffShop::print_queues()
 
 	while (currOrder != nullptr)
 	{
-		std::cout << "\t\t\tDate : " << currOrder->Date <<"\n\n";
+		std::cout << "\t\tDate : " << currOrder->Day<< "-" << currOrder->Mon<< "-" << currOrder->Year <<" Time : "<<currOrder->Hour<<":"<<currOrder->Min<<"\n\n";
 		std::cout <<" Table number : "<< currOrder->tableNum << "\t";
 		std::cout << "Item id : "<< currOrder->item.item_id<< "\t";
 		std::cout << "number of Items: " << currOrder->NumOfItems;
@@ -192,7 +217,7 @@ void coffShop::peek()
 		std::cout << "\n------------------------------------------------------------------\n";
 		std::cout << "\t\t\t\tORDER\n";
 		std::cout << "\n------------------------------------------------------------------\n";
-		std::cout << "\t\t\t Date : " << front->Date << "\n\n";
+		std::cout << "\t\t\tDate : " << front->Day << "-" << front->Mon << "-" << front->Year << " Time : " << front->Hour << ":" << front->Min << "\n\n";
 		std::cout << "\tTable number : " << front->tableNum << "\t";
 		std::cout << "Item id : " << front->item.item_id << "\t";
 		std::cout << "number of Items: " << front->NumOfItems;
@@ -234,25 +259,24 @@ void coffShop::display_report()
 			std::ifstream fin;
 			fin.open("amountAdded.txt", std::ios::in | std::ios::binary);
 
-			int id, amountAdded;
-			std::string date;
-
 			if (fin.is_open())
 			{
 				system("cls");
 
+				int d, m, y, h, min, id, amountAdded;
+
 				std::cout << "\n----------------------------------RECEIVED AMOUNT------------------------------------------\n\n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
-				std::cout << "    \t\tDATE\t\tID\tRECEIVED AMOUNT\n";
+				std::cout << "    \t\t  DATE    \tTIME\tID\tAMOUNT\n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
 
-				fin >> date >> id >> amountAdded;
+				fin >> d >> m >> y >> h >> min >> id >> amountAdded;
 
 				while (!fin.eof())
 				{
-					std::cout <<"  \t\t"<< date << "\t" << id << "\t" << amountAdded << "\t" << std::endl;
+					std::cout <<"  \t\t"<< d << "-" << m << "-" << y << "\t" << h <<":"<< min << "\t" << id << "\t " << amountAdded << "\t" << std::endl;
 					std::cout << "-------------------------------------------------------------------------------------------\n";
-					fin >> date >> id >> amountAdded;
+					fin >> d >> m >> y >> h >> min >> id >> amountAdded;
 				}
 			}
 			else
@@ -273,25 +297,24 @@ void coffShop::display_report()
 			
 			std::ifstream fin("ordersServed.txt", std::ios::in | std::ios::binary);
 
-			int tableN, id, n_of_items;
-			std::string date;
-
 			if (fin.is_open())
 			{
 				system("cls");
 
+				int tableN, d, m, y, h, min, id, n_of_items;
+
 				std::cout << "\n----------------------------------ORDERS SERVED--------------------------------------------\n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
-				std::cout << "\t\tTABLE-N  \t DATE\t\tID \t  ITEMS \n";
+				std::cout << "\t\tTABLE-N \tDATE\t    TIME \t ID \t  ITEMS \n";
 				std::cout << "-------------------------------------------------------------------------------------------\n";
 				
-				fin >> tableN >> date >> id >> n_of_items;
+				fin >> tableN >> d >> m >> y >> h >> min >> id >> n_of_items;
 
 				while (!fin.eof())
 				{
-					std::cout << "\t\t" << tableN << "\t\t" << date << "\t" << id << "\t   " << n_of_items << std::endl;
+					std::cout << "\t\t" << tableN << "\t      " << d <<"-"<< m <<"-"<< y << "\t    " << h <<":"<< min <<"\t "<< id << "\t   " << n_of_items << std::endl;
 					std::cout << "-------------------------------------------------------------------------------------------\n";
-					fin >> tableN >> date >> id >> n_of_items;
+					fin >> tableN >> d >> m >> y >> h >> min >> id >> n_of_items;
 				}
 			}
 			else

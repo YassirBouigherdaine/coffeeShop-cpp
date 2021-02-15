@@ -14,7 +14,9 @@ class coffShop : public Item
 
 		int tableNum = 0;
 
-		std::string Date;
+		int Day, Mon, Year;
+
+		int Hour, Min;
 
 		int NumOfItems = 0;
 

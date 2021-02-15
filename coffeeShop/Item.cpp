@@ -229,20 +229,35 @@ void Item::add_item()
 
 void Item::edit_amount(int id)
 {
-	int amountAdded;                            //received amount
-	std::string date;                           //day/mon/year
+	int d, m, y, h, min, amountAdded;                            //received amount
+
+	time_t now = time(NULL);
+
+	tm lt = {};
+
+	char dt[26] = {};
+
+	ctime_s(dt, 26, &now);
+
+	localtime_s(&lt, &now);
+
+	asctime_s(dt, 26, &lt);                                          
 	
 	std::fstream file("stock.txt", std::ios::out | std::ios::in | std::ios::binary);
 	std::ofstream newFile("amountAdded.txt", std::ios::app | std::ios::binary);
 
-	std::cout << "\n\n\t\t Enter date: ";
-	std::cin >> date;                                   
+    d = lt.tm_mday;
+	m = lt.tm_mon+1;
+	y = 1900 + lt.tm_year;
+	h = lt.tm_hour;
+	min = lt.tm_min;
+
 	std::cout << "\n\n\t\t Enter amount: ";
 	std::cin >> amountAdded;
 	                                   
 	// save operation in new file
 
-	newFile << date << "\t" << id << "\t" << amountAdded << "\t" << std::endl;
+	newFile << d << "\t" << m << "\t" << y << "\t" << h << "\t" << min << "\t" << id << "\t" << amountAdded << "\t" << std::endl;
 
 	while (file.read((char*)this, sizeof(Item)))
 	{
@@ -261,9 +276,9 @@ void Item::edit_amount(int id)
 	file.close();
 	newFile.close();
 
-	std::cin.get();
-	std::cout << "\n\t\t\t operation has been registered successfully\n";
 	system("cls");
+	std::cout << "\n\t\t\t operation has been registered successfully\n";
+	std::cin.get();
 }
 
 
